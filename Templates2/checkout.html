@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Fast Delivery</title>
+    <meta name="description" content="Finalize seu pedido no Fast Delivery. Pagamento seguro e entrega rápida em Parauapebas.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <!-- Additional styles for checkout -->
+    <style>
+        body {
+            background: var(--light-gray);
+            padding-top: 80px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 20px var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-black);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            color: var(--primary-blue);
+            transform: translateX(-5px);
+        }
+
+        .checkout-progress {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .progress-step.active {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .progress-step.completed {
+            color: #28a745;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .progress-step.active .step-number {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .progress-step.completed .step-number {
+            background: #28a745;
+            color: var(--white);
+        }
+
+        /* Main Content */
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .checkout-form {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .form-section {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-black);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: var(--primary-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .form-control.error {
+            border-color: #dc3545;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Address Options */
+        .address-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .address-option {
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .address-option:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .address-option.selected {
+            border-color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.05);
+        }
+
+        .address-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .address-type {
+            font-weight: 600;
+            color: var(--primary-black);
+        }
+
+        .address-details {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .add-address-btn {
+            border: 2px dashed #ccc;
+            background: transparent;
+            color: #666;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .add-address-btn:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .payment-method {
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary-blue);
+            background: rgba(0, 123, 255, 0.05);
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .payment-method.selected .payment-icon {
+            background: var(--gradient-primary);
+            color: var(--primary-black);
+        }
+
+        .payment-info {
+            flex: 1;
+        }
+
+        .payment-name {
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 0.25rem;
+        }
+
+        .payment-description {
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        /* Credit Card Form */
+        .card-form {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .card-form.active {
+            display: block;
+        }
+
+        .card-input-group {
+            position: relative;
+        }
+
+        .card-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            padding: 2rem;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .summary-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-black);
+        }
+
+        .order-items {
+            margin-bottom: 2rem;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 0.25rem;
+        }
+
+        .item-quantity {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .summary-totals {
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-row.final {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary-black);
+            padding-top: 0.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            background: var(--gradient-primary);
+            color: var(--primary-black);
+            border: none;
+            padding: 1.25rem;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 2rem;
+        }
+
+        .place-order-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .place-order-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Delivery Time */
+        .delivery-time {
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .delivery-time-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .delivery-time-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .checkout-progress {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="restaurante.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar
+                </a>
+                
+                <div class="logo">Fast Delivery</div>
+                
+                <div class="checkout-progress">
+                    <div class="progress-step completed">
+                        <div class="step-number">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span>Carrinho</span>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: #ccc;"></i>
+                    <div class="progress-step active">
+                        <div class="step-number">2</div>
+                        <span>Checkout</span>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: #ccc;"></i>
+                    <div class="progress-step">
+                        <div class="step-number">3</div>
+                        <span>Confirmação</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="checkout-container">
+            <!-- Checkout Form -->
+            <div class="checkout-form">
+                <!-- Delivery Address -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        Endereço de Entrega
+                    </h2>
+                    
+                    <div class="address-options">
+                        <div class="address-option selected" onclick="selectAddress(this)">
+                            <div class="address-header">
+                                <div class="address-type">Casa</div>
+                            </div>
+                            <div class="address-details">
+                                Rua das Flores, 123 - Centro<br>
+                                Parauapebas, PA - CEP: 68515-000
+                            </div>
+                        </div>
+                        
+                        <div class="address-option" onclick="selectAddress(this)">
+                            <div class="address-header">
+                                <div class="address-type">Trabalho</div>
+                            </div>
+                            <div class="address-details">
+                                Av. Central, 456 - Cidade Nova<br>
+                                Parauapebas, PA - CEP: 68515-100
+                            </div>
+                        </div>
+                        
+                        <button class="add-address-btn" onclick="showAddAddressModal()">
+                            <i class="fas fa-plus"></i>
+                            Adicionar novo endereço
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        Forma de Pagamento
+                    </h2>
+                    
+                    <div class="payment-methods">
+                        <div class="payment-method selected" onclick="selectPayment(this, 'card')">
+                            <div class="payment-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="payment-info">
+                                <div class="payment-name">Cartão de Crédito/Débito</div>
+                                <div class="payment-description">Visa, Mastercard, Elo</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-method" onclick="selectPayment(this, 'pix')">
+                            <div class="payment-icon">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                            <div class="payment-info">
+                                <div class="payment-name">PIX</div>
+                                <div class="payment-description">Pagamento instantâneo</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-method" onclick="selectPayment(this, 'money')">
+                            <div class="payment-icon">
+                                <i class="fas fa-money-bill"></i>
+                            </div>
+                            <div class="payment-info">
+                                <div class="payment-name">Dinheiro</div>
+                                <div class="payment-description">Pagamento na entrega</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Credit Card Form -->
+                    <div class="card-form active" id="cardForm">
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label class="form-label">Número do Cartão</label>
+                                <div class="card-input-group">
+                                    <input type="text" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" id="cardNumber">
+                                    <i class="card-icon fas fa-credit-card"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Nome no Cartão</label>
+                                <input type="text" class="form-control" placeholder="Nome completo" id="cardName">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Validade</label>
+                                <input type="text" class="form-control" placeholder="MM/AA" maxlength="5" id="cardExpiry">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">CVV</label>
+                                <input type="text" class="form-control" placeholder="123" maxlength="4" id="cardCvv">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">CPF</label>
+                                <input type="text" class="form-control" placeholder="000.000.000-00" maxlength="14" id="cardCpf">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Info -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        Informações Adicionais
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Observações para o pedido (opcional)</label>
+                        <textarea class="form-control" rows="3" placeholder="Ex: Sem cebola, ponto de referência, etc." id="orderNotes"></textarea>
+                    </div>
+                    
+                    <div class="form-group" id="changeGroup" style="display: none;">
+                        <label class="form-label">Troco para quanto?</label>
+                        <input type="text" class="form-control" placeholder="R$ 0,00" id="changeAmount">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <div class="summary-header">
+                    <i class="fas fa-receipt"></i>
+                    <span class="summary-title">Resumo do Pedido</span>
+                </div>
+                
+                <div class="delivery-time">
+                    <div class="delivery-time-value">25-35 min</div>
+                    <div class="delivery-time-label">Tempo estimado de entrega</div>
+                </div>
+                
+                <div class="order-items" id="orderItems">
+                    <!-- Items will be loaded here -->
+                </div>
+                
+                <div class="summary-totals">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotalAmount">R$ 0,00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Taxa de entrega:</span>
+                        <span>R$ 5,90</span>
+                    </div>
+                    <div class="total-row final">
+                        <span>Total:</span>
+                        <span id="totalAmount">R$ 5,90</span>
+                    </div>
+                </div>
+                
+                <button class="place-order-btn" onclick="placeOrder()">
+                    <i class="fas fa-check"></i>
+                    Finalizar Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Page specific scripts -->
+    <script>
+        let selectedPaymentMethod = 'card';
+        const deliveryFee = 5.90;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrderSummary();
+            setupFormValidation();
+            setupCardFormatting();
+
+            // Welcome message
+            setTimeout(() => {
+                FastDelivery.ui.showNotification(
+                    'Finalize seu pedido com segurança! 🔒',
+                    'info',
+                    3000
+                );
+            }, 1000);
+        });
+
+        // Load order summary
+        function loadOrderSummary() {
+            const cart = FastDelivery.storage.get('cart', []);
+            const orderItems = document.getElementById('orderItems');
+            
+            if (cart.length === 0) {
+                FastDelivery.ui.showNotification(
+                    'Carrinho vazio! Redirecionando...',
+                    'warning'
+                );
+                setTimeout(() => {
+                    window.location.href = 'home_cliente.html';
+                }, 2000);
+                return;
+            }
+            
+            // Display items
+            orderItems.innerHTML = cart.map(item => `
+                <div class="order-item">
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-quantity">Quantidade: ${item.quantity}</div>
+                    </div>
+                    <div class="item-price">${FastDelivery.utils.formatCurrency(item.price * item.quantity)}</div>
+                </div>
+            `).join('');
+            
+            // Calculate totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const total = subtotal + deliveryFee;
+            
+            document.getElementById('subtotalAmount').textContent = FastDelivery.utils.formatCurrency(subtotal);
+            document.getElementById('totalAmount').textContent = FastDelivery.utils.formatCurrency(total);
+        }
+
+        // Select address
+        function selectAddress(element) {
+            document.querySelectorAll('.address-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            element.classList.add('selected');
+        }
+
+        // Select payment method
+        function selectPayment(element, method) {
+            document.querySelectorAll('.payment-method').forEach(option => {
+                option.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            selectedPaymentMethod = method;
+            
+            // Show/hide card form
+            const cardForm = document.getElementById('cardForm');
+            const changeGroup = document.getElementById('changeGroup');
+            
+            cardForm.classList.toggle('active', method === 'card');
+            changeGroup.style.display = method === 'money' ? 'block' : 'none';
+        }
+
+        // Show add address modal
+        function showAddAddressModal() {
+            FastDelivery.ui.showModal(`
+                <div>
+                    <h4>Adicionar Novo Endereço</h4>
+                    <form id="addressForm">
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Endereço</label>
+                            <select class="form-control">
+                                <option value="casa">Casa</option>
+                                <option value="trabalho">Trabalho</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CEP</label>
+                            <input type="text" class="form-control" placeholder="00000-000" maxlength="9">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Endereço</label>
+                            <input type="text" class="form-control" placeholder="Rua, Avenida, etc.">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Número</label>
+                                <input type="text" class="form-control" placeholder="123">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Complemento</label>
+                                <input type="text" class="form-control" placeholder="Apto, Bloco, etc.">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bairro</label>
+                            <input type="text" class="form-control" placeholder="Nome do bairro">
+                        </div>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-secondary me-2" onclick="FastDelivery.ui.hideModal(this.closest('.modal-overlay'))">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                Salvar Endereço
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `, {
+                title: 'Novo Endereço'
+            });
+        }
+
+        // Setup form validation
+        function setupFormValidation() {
+            const requiredFields = ['cardNumber', 'cardName', 'cardExpiry', 'cardCvv', 'cardCpf'];
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('blur', function() {
+                        validateField(this);
+                    });
+                }
+            });
+        }
+
+        // Validate field
+        function validateField(field) {
+            const value = field.value.trim();
+            let isValid = true;
+            let errorMessage = '';
+            
+            if (!value) {
+                isValid = false;
+                errorMessage = 'Este campo é obrigatório';
+            } else {
+                switch (field.id) {
+                    case 'cardNumber':
+                        isValid = value.replace(/\s/g, '').length >= 13;
+                        errorMessage = 'Número do cartão inválido';
+                        break;
+                    case 'cardExpiry':
+                        isValid = /^\d{2}\/\d{2}$/.test(value);
+                        errorMessage = 'Data de validade inválida';
+                        break;
+                    case 'cardCvv':
+                        isValid = /^\d{3,4}$/.test(value);
+                        errorMessage = 'CVV inválido';
+                        break;
+                    case 'cardCpf':
+                        isValid = value.replace(/\D/g, '').length === 11;
+                        errorMessage = 'CPF inválido';
+                        break;
+                }
+            }
+            
+            // Update field appearance
+            field.classList.toggle('error', !isValid);
+            
+            // Show/hide error message
+            let errorElement = field.parentNode.querySelector('.error-message');
+            if (!isValid) {
+                if (!errorElement) {
+                    errorElement = document.createElement('div');
+                    errorElement.className = 'error-message';
+                    field.parentNode.appendChild(errorElement);
+                }
+                errorElement.textContent = errorMessage;
+            } else if (errorElement) {
+                errorElement.remove();
+            }
+            
+            return isValid;
+        }
+
+        // Setup card formatting
+        function setupCardFormatting() {
+            const cardNumber = document.getElementById('cardNumber');
+            const cardExpiry = document.getElementById('cardExpiry');
+            const cardCpf = document.getElementById('cardCpf');
+            
+            if (cardNumber) {
+                cardNumber.addEventListener('input', function() {
+                    let value = this.value.replace(/\s/g, '').replace(/\D/g, '');
+                    value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+                    this.value = value;
+                });
+            }
+            
+            if (cardExpiry) {
+                cardExpiry.addEventListener('input', function() {
+                    let value = this.value.replace(/\D/g, '');
+                    if (value.length >= 2) {
+                        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                    }
+                    this.value = value;
+                });
+            }
+            
+            if (cardCpf) {
+                cardCpf.addEventListener('input', function() {
+                    let value = this.value.replace(/\D/g, '');
+                    value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                    this.value = value;
+                });
+            }
+        }
+
+        // Place order
+        function placeOrder() {
+            const placeOrderBtn = document.querySelector('.place-order-btn');
+            
+            // Validate form if card payment
+            if (selectedPaymentMethod === 'card') {
+                const requiredFields = ['cardNumber', 'cardName', 'cardExpiry', 'cardCvv', 'cardCpf'];
+                let isFormValid = true;
+                
+                requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field && !validateField(field)) {
+                        isFormValid = false;
+                    }
+                });
+                
+                if (!isFormValid) {
+                    FastDelivery.ui.showNotification(
+                        'Por favor, preencha todos os campos obrigatórios',
+                        'error'
+                    );
+                    return;
+                }
+            }
+            
+            // Show loading
+            FastDelivery.ui.showLoading(placeOrderBtn);
+            placeOrderBtn.disabled = true;
+            
+            // Simulate order processing
+            setTimeout(() => {
+                FastDelivery.ui.hideLoading(placeOrderBtn);
+                
+                // Generate order ID
+                const orderId = 'FD-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+                
+                // Clear cart
+                FastDelivery.storage.remove('cart');
+                
+                // Save order
+                const orderData = {
+                    id: orderId,
+                    date: new Date().toISOString(),
+                    status: 'confirmed',
+                    paymentMethod: selectedPaymentMethod,
+                    total: document.getElementById('totalAmount').textContent
+                };
+                
+                FastDelivery.storage.set('lastOrder', orderData);
+                
+                // Show success and redirect
+                FastDelivery.ui.showNotification(
+                    'Pedido realizado com sucesso! 🎉',
+                    'success'
+                );
+                
+                setTimeout(() => {
+                    window.location.href = `confirmacao.html?order=${orderId}`;
+                }, 2000);
+                
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

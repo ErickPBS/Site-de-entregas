@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Pedido - Fast Delivery</title>
+    <meta name="description" content="Seu pedido foi confirmado! Acompanhe o status da sua entrega no Fast Delivery.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <!-- Additional styles for confirmation page -->
+    <style>
+        body {
+            background: var(--light-gray);
+            padding-top: 80px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 20px var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-black);
+        }
+
+        /* Main Content */
+        .confirmation-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            padding: 3rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .confirmation-icon {
+            color: #28a745;
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            animation: bounceIn 0.8s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .confirmation-message h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-black);
+            margin-bottom: 1rem;
+        }
+
+        .confirmation-message p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .order-details-summary {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: #666;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--primary-black);
+        }
+
+        .detail-row.total {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 1rem;
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--primary-black);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: none;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .confirmation-container {
+                padding: 2rem 1rem;
+                margin: 1rem auto;
+            }
+
+            .confirmation-icon {
+                font-size: 4rem;
+            }
+
+            .confirmation-message h2 {
+                font-size: 2rem;
+            }
+
+            .confirmation-message p {
+                font-size: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .btn-action {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div></div> <!-- Placeholder for alignment -->
+                
+                <h1 class="page-title">Confirmação de Pedido</h1>
+                
+                <div></div> <!-- Placeholder for alignment -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="confirmation-container">
+            <div class="confirmation-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="confirmation-message">
+                <h2>Pedido Realizado com Sucesso!</h2>
+                <p>Obrigado por seu pedido no Fast Delivery. Estamos preparando tudo com carinho para você!</p>
+            </div>
+            
+            <div class="order-details-summary">
+                <div class="detail-row">
+                    <span class="detail-label">Número do Pedido:</span>
+                    <span class="detail-value" id="orderId">#FD-2024-XXX</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Restaurante:</span>
+                    <span class="detail-value">Pizza Express</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Endereço de Entrega:</span>
+                    <span class="detail-value">Rua das Flores, 123 - Centro</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Previsão de Entrega:</span>
+                    <span class="detail-value">25-35 minutos</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Forma de Pagamento:</span>
+                    <span class="detail-value" id="paymentMethod">Cartão de Crédito</span>
+                </div>
+                <div class="detail-row total">
+                    <span class="detail-label">Total Pago:</span>
+                    <span class="detail-value" id="totalPaid">R$ 0,00</span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="pedidos.html" class="btn-action btn-secondary">
+                    <i class="fas fa-map-marker-alt"></i> Acompanhar Pedido
+                </a>
+                <a href="home_cliente.html" class="btn-action btn-primary">
+                    <i class="fas fa-home"></i> Voltar para o Início
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Page specific scripts -->
+    <script>
+        document.addEventListener(\'DOMContentLoaded\', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get(\'order\');
+            
+            if (orderId) {
+                document.getElementById(\'orderId\').textContent = orderId;
+                
+                // Retrieve order details from storage (simulated)
+                const lastOrder = FastDelivery.storage.get(\'lastOrder\');
+                if (lastOrder && lastOrder.id === orderId) {
+                    document.getElementById(\'paymentMethod\').textContent = formatPaymentMethod(lastOrder.paymentMethod);
+                    document.getElementById(\'totalPaid\').textContent = lastOrder.total;
+                } else {
+                    // Fallback if order not found in storage
+                    document.getElementById(\'paymentMethod\').textContent = \'Não disponível\';
+                    document.getElementById(\'totalPaid\').textContent = \'R$ --,--\';
+                }
+            }
+
+            // Welcome message
+            setTimeout(() => {
+                FastDelivery.ui.showNotification(
+                    \'Seu pedido foi confirmado! \uD83C\uDF89\',
+                    \'success\',
+                    3000
+                );
+            }, 1000);
+        });
+
+        function formatPaymentMethod(method) {
+            switch (method) {
+                case \'card\': return \'Cartão de Crédito/Débito\';
+                case \'pix\': return \'PIX\';
+                case \'money\': return \'Dinheiro (Pagamento na entrega)\
+                \';
+                default: return method;
+            }
+        }
+    </script>
+</body>
+</html>

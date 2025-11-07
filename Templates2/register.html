@@ -1,0 +1,12 @@
+{{ define "content" }}
+<div class="auth-container">
+    <h2>Criar Conta</h2>
+    <form method="POST" action="/cadastro">
+        <input type="text" name="nome" placeholder="Nome completo" required>
+        <input type="email" name="email" placeholder="E-mail" required>
+        <input type="password" name="password" placeholder="Senha" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+    <p>Já tem conta? <a href="/login">Faça login</a></p>
+</div>
+{{ end }}

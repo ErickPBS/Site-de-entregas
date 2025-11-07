@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Fast Delivery</title>
+    <meta name="description" content="Descubra os melhores restaurantes de Parauapebas e faça seu pedido com entrega rápida.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <!-- Additional styles for client home -->
+    <style>
+        body {
+            background: var(--light-gray);
+            padding-top: 80px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 20px var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-btn {
+            position: relative;
+            background: var(--gradient-primary);
+            color: var(--primary-black);
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--primary-blue);
+            color: var(--white);
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 50px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: var(--gradient-bg);
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .location-selector {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--white);
+            color: var(--primary-black);
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .location-selector:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Categories */
+        .categories-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-black);
+        }
+
+        .view-all-btn {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .view-all-btn:hover {
+            color: var(--primary-black);
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category-card {
+            background: var(--white);
+            padding: 2rem 1rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .category-card:hover::before {
+            left: 100%;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: var(--primary-black);
+        }
+
+        .category-name {
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .category-count {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* Restaurants */
+        .restaurants-section {
+            margin-bottom: 3rem;
+        }
+
+        .restaurants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .restaurant-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .restaurant-image {
+            height: 200px;
+            background: var(--gradient-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .restaurant-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 215, 0, 0.8), rgba(0, 123, 255, 0.8));
+        }
+
+        .restaurant-image-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--white);
+            font-size: 3rem;
+            z-index: 2;
+        }
+
+        .restaurant-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--white);
+            color: var(--primary-black);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 3;
+        }
+
+        .restaurant-info {
+            padding: 1.5rem;
+        }
+
+        .restaurant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .restaurant-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .restaurant-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: var(--gradient-primary);
+            color: var(--primary-black);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .restaurant-category {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .restaurant-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .delivery-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .delivery-time,
+        .delivery-fee {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Promotions */
+        .promotions-section {
+            margin-bottom: 3rem;
+        }
+
+        .promotions-slider {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .promotion-card {
+            min-width: 300px;
+            background: var(--gradient-primary);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            color: var(--primary-black);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .promotion-card:hover {
+            transform: scale(1.05);
+        }
+
+        .promotion-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        .promotion-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .promotion-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .promotion-description {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .promotion-code {
+            background: var(--white);
+            color: var(--primary-black);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .quick-action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: var(--primary-black);
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px var(--shadow);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-container {
+                margin: 0;
+                max-width: none;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .restaurants-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .promotions-slider {
+                padding: 0 1rem;
+            }
+
+            .promotion-card {
+                min-width: 250px;
+            }
+
+            .quick-actions {
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Fast Delivery</div>
+                
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Buscar restaurantes, pratos ou categorias...">
+                    <i class="search-icon fas fa-search"></i>
+                </div>
+                
+                <div class="user-menu">
+                    <button class="cart-btn" onclick="window.location.href='carrinho.html'">
+                        <i class="fas fa-shopping-cart"></i>
+                        Carrinho
+                        <span class="cart-badge">3</span>
+                    </button>
+                    <div class="user-avatar" onclick="showUserMenu()">
+                        JS
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Fome? Nós entregamos!</h1>
+                <p>Os melhores restaurantes de Parauapebas na palma da sua mão</p>
+                <div class="location-selector" onclick="showLocationModal()">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Parauapebas, PA - Centro
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Categorias</h2>
+                <a href="#" class="view-all-btn">Ver todas</a>
+            </div>
+            
+            <div class="categories-grid">
+                <div class="category-card hover-lift" onclick="filterByCategory('pizza')">
+                    <div class="category-icon">
+                        <i class="fas fa-pizza-slice"></i>
+                    </div>
+                    <div class="category-name">Pizza</div>
+                    <div class="category-count">12 restaurantes</div>
+                </div>
+                
+                <div class="category-card hover-lift" onclick="filterByCategory('burger')">
+                    <div class="category-icon">
+                        <i class="fas fa-hamburger"></i>
+                    </div>
+                    <div class="category-name">Hambúrguer</div>
+                    <div class="category-count">8 restaurantes</div>
+                </div>
+                
+                <div class="category-card hover-lift" onclick="filterByCategory('acai')">
+                    <div class="category-icon">
+                        <i class="fas fa-ice-cream"></i>
+                    </div>
+                    <div class="category-name">Açaí</div>
+                    <div class="category-count">6 restaurantes</div>
+                </div>
+                
+                <div class="category-card hover-lift" onclick="filterByCategory('japanese')">
+                    <div class="category-icon">
+                        <i class="fas fa-fish"></i>
+                    </div>
+                    <div class="category-name">Japonesa</div>
+                    <div class="category-count">4 restaurantes</div>
+                </div>
+                
+                <div class="category-card hover-lift" onclick="filterByCategory('brazilian')">
+                    <div class="category-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="category-name">Brasileira</div>
+                    <div class="category-count">15 restaurantes</div>
+                </div>
+                
+                <div class="category-card hover-lift" onclick="filterByCategory('drinks')">
+                    <div class="category-icon">
+                        <i class="fas fa-cocktail"></i>
+                    </div>
+                    <div class="category-name">Bebidas</div>
+                    <div class="category-count">10 restaurantes</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promotions Section -->
+    <section class="promotions-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Promoções Especiais</h2>
+            </div>
+            
+            <div class="promotions-slider">
+                <div class="promotion-card hover-scale">
+                    <div class="promotion-content">
+                        <div class="promotion-title">Primeira Compra</div>
+                        <div class="promotion-description">Ganhe 20% de desconto no seu primeiro pedido!</div>
+                        <div class="promotion-code">BEMVINDO20</div>
+                    </div>
+                </div>
+                
+                <div class="promotion-card hover-scale">
+                    <div class="promotion-content">
+                        <div class="promotion-title">Frete Grátis</div>
+                        <div class="promotion-description">Pedidos acima de R$ 30 com frete grátis</div>
+                        <div class="promotion-code">FRETEGRATIS</div>
+                    </div>
+                </div>
+                
+                <div class="promotion-card hover-scale">
+                    <div class="promotion-content">
+                        <div class="promotion-title">Pizza em Dobro</div>
+                        <div class="promotion-description">Compre 1 pizza e ganhe 50% na segunda</div>
+                        <div class="promotion-code">PIZZA50</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Restaurants Section -->
+    <section class="restaurants-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Restaurantes em Destaque</h2>
+                <a href="#" class="view-all-btn">Ver todos</a>
+            </div>
+            
+            <div class="restaurants-grid">
+                <div class="restaurant-card hover-lift" onclick="window.location.href='restaurante.html?id=1'">
+                    <div class="restaurant-image">
+                        <div class="restaurant-image-placeholder">
+                            <i class="fas fa-pizza-slice"></i>
+                        </div>
+                        <div class="restaurant-badge">Promoção</div>
+                    </div>
+                    <div class="restaurant-info">
+                        <div class="restaurant-header">
+                            <div>
+                                <div class="restaurant-name">Pizza Express</div>
+                                <div class="restaurant-category">Pizza • Italiana</div>
+                            </div>
+                            <div class="restaurant-rating">
+                                <i class="fas fa-star"></i>
+                                4.8
+                            </div>
+                        </div>
+                        <div class="restaurant-details">
+                            <div class="delivery-info">
+                                <div class="delivery-time">
+                                    <i class="fas fa-clock"></i>
+                                    25-35 min
+                                </div>
+                                <div class="delivery-fee">
+                                    <i class="fas fa-motorcycle"></i>
+                                    R$ 5,90
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="restaurant-card hover-lift" onclick="window.location.href='restaurante.html?id=2'">
+                    <div class="restaurant-image">
+                        <div class="restaurant-image-placeholder">
+                            <i class="fas fa-hamburger"></i>
+                        </div>
+                    </div>
+                    <div class="restaurant-info">
+                        <div class="restaurant-header">
+                            <div>
+                                <div class="restaurant-name">Burger House</div>
+                                <div class="restaurant-category">Hambúrguer • Americana</div>
+                            </div>
+                            <div class="restaurant-rating">
+                                <i class="fas fa-star"></i>
+                                4.6
+                            </div>
+                        </div>
+                        <div class="restaurant-details">
+                            <div class="delivery-info">
+                                <div class="delivery-time">
+                                    <i class="fas fa-clock"></i>
+                                    30-40 min
+                                </div>
+                                <div class="delivery-fee">
+                                    <i class="fas fa-motorcycle"></i>
+                                    R$ 4,90
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="restaurant-card hover-lift" onclick="window.location.href='restaurante.html?id=3'">
+                    <div class="restaurant-image">
+                        <div class="restaurant-image-placeholder">
+                            <i class="fas fa-ice-cream"></i>
+                        </div>
+                        <div class="restaurant-badge">Novo</div>
+                    </div>
+                    <div class="restaurant-info">
+                        <div class="restaurant-header">
+                            <div>
+                                <div class="restaurant-name">Açaí do Norte</div>
+                                <div class="restaurant-category">Açaí • Sobremesas</div>
+                            </div>
+                            <div class="restaurant-rating">
+                                <i class="fas fa-star"></i>
+                                4.9
+                            </div>
+                        </div>
+                        <div class="restaurant-details">
+                            <div class="delivery-info">
+                                <div class="delivery-time">
+                                    <i class="fas fa-clock"></i>
+                                    15-25 min
+                                </div>
+                                <div class="delivery-fee">
+                                    <i class="fas fa-motorcycle"></i>
+                                    R$ 3,90
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="restaurant-card hover-lift" onclick="window.location.href='restaurante.html?id=4'">
+                    <div class="restaurant-image">
+                        <div class="restaurant-image-placeholder">
+                            <i class="fas fa-fish"></i>
+                        </div>
+                    </div>
+                    <div class="restaurant-info">
+                        <div class="restaurant-header">
+                            <div>
+                                <div class="restaurant-name">Sushi Zen</div>
+                                <div class="restaurant-category">Japonesa • Sushi</div>
+                            </div>
+                            <div class="restaurant-rating">
+                                <i class="fas fa-star"></i>
+                                4.7
+                            </div>
+                        </div>
+                        <div class="restaurant-details">
+                            <div class="delivery-info">
+                                <div class="delivery-time">
+                                    <i class="fas fa-clock"></i>
+                                    40-50 min
+                                </div>
+                                <div class="delivery-fee">
+                                    <i class="fas fa-motorcycle"></i>
+                                    R$ 6,90
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <button class="quick-action-btn" onclick="window.location.href='pedidos.html'" data-tooltip="Meus Pedidos">
+            <i class="fas fa-receipt"></i>
+        </button>
+        <button class="quick-action-btn" onclick="showSupportModal()" data-tooltip="Suporte">
+            <i class="fas fa-headset"></i>
+        </button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Page specific scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('input', FastDelivery.utils.debounce(function() {
+                const query = this.value.trim();
+                if (query.length > 2) {
+                    performSearch(query);
+                }
+            }, 300));
+
+            // Cart update
+            updateCartBadge();
+
+            // Welcome message
+            setTimeout(() => {
+                const userData = FastDelivery.storage.get('currentUser');
+                const name = userData ? userData.firstName || 'Cliente' : 'Cliente';
+                
+                FastDelivery.ui.showNotification(
+                    `Bem-vindo, ${name}! 🍽️`,
+                    'success',
+                    3000
+                );
+            }, 1000);
+
+            // Auto-update promotions
+            setInterval(rotatePromotions, 10000);
+        });
+
+        // Search function
+        function performSearch(query) {
+            console.log('Buscando por:', query);
+            FastDelivery.ui.showNotification(
+                `Buscando por "${query}"...`,
+                'info',
+                2000
+            );
+            
+            // Simulate search results
+            setTimeout(() => {
+                FastDelivery.ui.showNotification(
+                    `Encontrados 12 resultados para "${query}"`,
+                    'success',
+                    3000
+                );
+            }, 1000);
+        }
+
+        // Filter by category
+        function filterByCategory(category) {
+            FastDelivery.ui.showNotification(
+                `Filtrando por categoria: ${category}`,
+                'info',
+                2000
+            );
+            
+            // Simulate filtering
+            setTimeout(() => {
+                const restaurants = document.querySelectorAll('.restaurant-card');
+                restaurants.forEach(card => {
+                    card.style.opacity = '0.5';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                    }, 500);
+                });
+            }, 500);
+        }
+
+        // Show user menu
+        function showUserMenu() {
+            FastDelivery.ui.showModal(`
+                <div class="text-center">
+                    <div class="user-avatar mb-3" style="width: 80px; height: 80px; font-size: 2rem; margin: 0 auto;">
+                        JS
+                    </div>
+                    <h4>João Silva</h4>
+                    <p class="text-muted">joao.silva@email.com</p>
+                    <div class="mt-4">
+                        <button class="btn btn-outline mb-2 w-100" onclick="window.location.href='perfil_cliente.html'">
+                            <i class="fas fa-user"></i> Meu Perfil
+                        </button>
+                        <button class="btn btn-outline mb-2 w-100" onclick="window.location.href='pedidos.html'">
+                            <i class="fas fa-receipt"></i> Meus Pedidos
+                        </button>
+                        <button class="btn btn-outline mb-2 w-100" onclick="showSupportModal()">
+                            <i class="fas fa-headset"></i> Suporte
+                        </button>
+                        <hr>
+                        <button class="btn btn-outline w-100" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </button>
+                    </div>
+                </div>
+            `, {
+                title: 'Minha Conta'
+            });
+        }
+
+        // Show location modal
+        function showLocationModal() {
+            FastDelivery.ui.showModal(`
+                <div>
+                    <h4>Selecionar Localização</h4>
+                    <div class="form-group">
+                        <label>Endereço de Entrega</label>
+                        <input type="text" class="form-control" placeholder="Digite seu endereço..." value="Parauapebas, PA - Centro">
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-primary w-100">
+                            <i class="fas fa-map-marker-alt"></i> Confirmar Localização
+                        </button>
+                    </div>
+                </div>
+            `, {
+                title: 'Localização'
+            });
+        }
+
+        // Show support modal
+        function showSupportModal() {
+            FastDelivery.ui.showModal(`
+                <div class="text-center">
+                    <i class="fas fa-headset fa-4x mb-3" style="color: var(--primary-blue);"></i>
+                    <h4>Precisa de Ajuda?</h4>
+                    <p>Nossa equipe está pronta para ajudar você!</p>
+                    <div class="mt-4">
+                        <button class="btn btn-primary mb-2 w-100">
+                            <i class="fas fa-phone"></i> Ligar: (94) 99999-9999
+                        </button>
+                        <button class="btn btn-secondary mb-2 w-100">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button class="btn btn-outline w-100">
+                            <i class="fas fa-envelope"></i> E-mail
+                        </button>
+                    </div>
+                </div>
+            `, {
+                title: 'Suporte'
+            });
+        }
+
+        // Update cart badge
+        function updateCartBadge() {
+            const cart = FastDelivery.storage.get('cart', []);
+            const badge = document.querySelector('.cart-badge');
+            if (badge) {
+                badge.textContent = cart.length;
+                badge.style.display = cart.length > 0 ? 'block' : 'none';
+            }
+        }
+
+        // Rotate promotions
+        function rotatePromotions() {
+            const slider = document.querySelector('.promotions-slider');
+            if (slider) {
+                slider.scrollBy({
+                    left: 320,
+                    behavior: 'smooth'
+                });
+                
+                // Reset to beginning if at end
+                setTimeout(() => {
+                    if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth) {
+                        slider.scrollTo({ left: 0, behavior: 'smooth' });
+                    }
+                }, 500);
+            }
+        }
+
+        // Logout function
+        function logout() {
+            FastDelivery.storage.clear();
+            FastDelivery.ui.showNotification(
+                'Logout realizado com sucesso!',
+                'success'
+            );
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

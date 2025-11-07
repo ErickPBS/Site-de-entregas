@@ -1,0 +1,337 @@
+{{ define "Painel" }}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Delivery • Início</title>
+  <style>
+    :root{
+      --bg:#f5f5f5;
+      --surface:#ffffff;
+      --line:#e5e5e5;
+      --text:#2b2b2b;
+      --muted:#7a7a7a;
+      --brand:#ff6a00; /* laranja do CTA */
+      --accent:#1e88e5; /* azul dos detalhes */
+      --price:#2e7d32;  /* verde do preço */
+      --radius:10px;
+      --shadow:0 2px 8px rgba(0,0,0,.06);
+      --sidebar: 260px;
+      --cart: 340px;
+      --contentMax: 1240px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+
+    /* Sidebar */
+    .sidebar{
+      position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:var(--surface);border-right:1px solid var(--line);padding:14px 10px;overflow:auto
+    }
+    .side-header{display:flex;align-items:center;gap:10px;padding:8px 10px}
+    .logo{width:32px;height:32px;border-radius:8px;background:#ff9100;display:grid;place-items:center;color:#fff;font-weight:800}
+    .brand{font-weight:800}
+    .side-nav{margin:8px 6px}
+    .side-link{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;color:#444}
+    .side-link:hover{background:#f1f1f1}
+    .side-link.active{background:#eee;font-weight:600}
+    .side-footer{margin-top:10px;border-top:1px solid var(--line);padding:10px;color:var(--muted);font-size:12px}
+
+    /* Cart */
+    .cart{
+      position:fixed;inset:0 0 0 auto;width:var(--cart);background:var(--surface);border-left:1px solid var(--line);display:flex;flex-direction:column
+    }
+    .cart .head{padding:14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+    .cart .scroll{padding:12px;overflow:auto;flex:1}
+    .cart-item{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:var(--shadow);margin-bottom:10px}
+    .qty{display:flex;align-items:center;gap:8px}
+    .qty button{width:28px;height:28px;border:1px solid var(--line);border-radius:6px;background:#fafafa}
+    .price{color:var(--price);font-weight:700}
+    .coupon{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:12px;color:#555}
+    .cart .totalbar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:12px}
+    .primary{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--brand);color:#fff;padding:12px;border-radius:10px;font-weight:800}
+
+    /* Main area */
+    .main{margin-left:var(--sidebar);margin-right:var(--cart);min-height:100vh}
+    .topbar{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--line);padding:10px;z-index:5}
+    .topbar-wrap{max-width:var(--contentMax);margin:0 auto;display:grid;grid-template-columns:1fr 260px;gap:12px}
+    .search{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:999px;padding:10px 14px;background:#fff}
+    .search input{border:none;outline:none;flex:1;font-size:14px}
+    .delivery-mode{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
+
+    .tabs{max-width:var(--contentMax);margin:8px auto 0;display:flex;gap:6px;overflow:auto;padding:0 10px}
+    .tab{padding:10px 14px;border-bottom:2px solid transparent;white-space:nowrap;background:#fff;border:1px solid var(--line);border-radius:999px}
+    .tab.active{border-color:var(--accent);}
+
+    .wrap{max-width:var(--contentMax);margin:16px auto;padding:0 10px}
+    .section{margin:18px 0}
+    .section h3{margin:0 0 10px 4px;color:#444}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:10px;display:grid;grid-template-columns:76px 1fr auto;gap:10px;align-items:center}
+    .card img{width:76px;height:76px;object-fit:contain}
+    .card .title{font-weight:600}
+    .card .subtitle{color:var(--muted);font-size:12px}
+    .card .actions{display:grid;gap:8px;justify-items:end}
+    .ghost{border:1px dashed var(--line);background:#fafafa}
+    .add{border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:#fafafa}
+
+    @media (max-width: 1200px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width: 980px){
+      :root{--sidebar:220px;--cart:0px}
+      .cart{display:none}
+      .main{margin-right:0}
+    }
+    @media (max-width: 720px){
+      .grid{grid-template-columns:1fr}
+      .topbar-wrap{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="side-header">
+      <div class="logo">▶</div>
+      <div>
+        <div class="brand">Fast Delivery</div>
+        <div style="color:#9a9a9a;font-size:12px">Painel inicial</div>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a class="side-link active" href="#">Início</a>
+      <a class="side-link" href="#">Cardápio</a>
+      <a class="side-link" href="#">Minha conta</a>
+      <a class="side-link" href="#">Meus pedidos</a>
+      <a class="side-link" href="#">Avaliações</a>
+    </nav>
+    <div class="side-footer">Sobre · Ajuda · Termos</div>
+  </aside>
+
+  <!-- Carrinho -->
+  <aside class="cart" aria-label="Carrinho">
+    <div class="head"><strong>Entrega</strong><span style="margin-left:auto"><button title="Agendar" class="add">AGENDAR</button></span></div>
+    <div class="scroll" id="cartItems">
+      <div class="coupon">
+        <div style="font-size:12px;color:#777;margin-bottom:8px">Cupom</div>
+        <input id="coupon" placeholder="Adicionar cupom" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px"/>
+      </div>
+    </div>
+    <div class="totalbar">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <strong>Total:</strong>
+        <strong class="price" id="totalPrice">R$ 0,00</strong>
+      </div>
+      <button class="primary" id="checkout"><span>✈</span> FORMA DE ENTREGA</button>
+    </div>
+  </aside>
+
+  <!-- Área principal -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-wrap">
+        <div class="search">
+          <span>🔎</span>
+          <input id="search" type="search" placeholder="Procurar" />
+        </div>
+        <div class="delivery-mode">Entrega • <span style="color:#777">em até 45 min</span></div>
+      </div>
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-cat="todas">BEBIDAS</button>
+        <button class="tab" data-cat="refrigerantes">REFRIGERANTES</button>
+        <button class="tab" data-cat="porcoes">PORÇÕES</button>
+        <button class="tab" data-cat="aguas">ÁGUAS</button>
+      </div>
+    </div>
+
+    <div class="wrap" id="catalog">
+      <!-- Refrigerantes -->
+      <section class="section" data-section="refrigerantes">
+        <h3>Refrigerantes</h3>
+        <div class="grid">
+          <article class="card" data-title="Coca-Cola 600ml" data-cat="refrigerantes">
+            <img alt="Coca 600" src="https://images.unsplash.com/photo-1609838463522-d43cfb5c9dcd?q=80&w=300"/>
+            <div>
+              <div class="title">Coca-Cola 600ml</div>
+              <div class="subtitle">Garrafa • gelada</div>
+            </div>
+            <div class="actions">
+              <div class="price" data-price>R$ 6,00</div>
+              <button class="add" data-add>Adicionar</button>
+            </div>
+          </article>
+          <article class="card" data-title="Coca-Cola 310ml" data-cat="refrigerantes">
+            <img alt="Coca 310" src="https://images.unsplash.com/photo-1596558450255-14224b5a77b7?q=80&w=300"/>
+            <div>
+              <div class="title">Coca-Cola 310ml</div>
+              <div class="subtitle">Lata</div>
+            </div>
+            <div class="actions">
+              <div class="price" data-price>R$ 2,50</div>
+              <button class="add" data-add>Adicionar</button>
+            </div>
+          </article>
+          <article class="card" data-title="Coca-Cola 2L" data-cat="refrigerantes">
+            <img alt="Coca 2L" src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=300"/>
+            <div>
+              <div class="title">Coca-Cola 2L</div>
+              <div class="subtitle">Família</div>
+            </div>
+            <div class="actions">
+              <div class="price" data-price>R$ 8,50</div>
+              <button class="add" data-add>Adicionar</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Porções -->
+      <section class="section" data-section="porcoes">
+        <h3>Porções</h3>
+        <div class="grid">
+          <article class="card" data-title="Porção de mussarela" data-cat="porcoes">
+            <img alt="Mussarela" src="https://images.unsplash.com/photo-1604908554023-6f23f5ef1ffe?q=80&w=300"/>
+            <div>
+              <div class="title">Porção de mussarela</div>
+            </div>
+            <div class="actions">
+              <div class="price" data-price>R$ 8,00</div>
+              <button class="add" data-add>Adicionar</button>
+            </div>
+          </article>
+          <article class="card" data-title="Porção de presunto" data-cat="porcoes">
+            <img alt="Presunto" src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=300"/>
+            <div>
+              <div class="title">Porção de presunto</div>
+            </div>
+            <div class="actions">
+              <div class="price" data-price>R$ 8,00</div>
+              <button class="add" data-add>Adicionar</button>
+            </div>
+          </article>
+          <article class="card" data-title="Batata frita" data-cat="porcoes">
+            <img alt="Batata frita" src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=300"/>
+            <div>
+              <div class="title">Batata frita</div>
+              <div class="subtitle">Crocante</div>
+            </div>
+            <div class="actions">
+              <div class="price" data-price>R$ 8,00</div>
+              <button class="add" data-add>Adicionar</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Águas -->
+      <section class="section" data-section="aguas">
+        <h3>Águas</h3>
+        <div class="grid">
+          <article class="card" data-title="Água mineral com gás" data-cat="aguas">
+            <img alt="Água com gás" src="https://images.unsplash.com/photo-1551024709-8f23befc6cf7?q=80&w=300"/>
+            <div>
+              <div class="title">Água mineral com gás</div>
+            </div>
+            <div class="actions">
+              <div class="price" data-price>R$ 3,50</div>
+              <button class="add" data-add>Adicionar</button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Utilidades
+    const brl = n => n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})
+    const parsePrice = el => Number(el.textContent.replace(/[^0-9,]/g,'').replace(',','.'))
+
+    // Busca
+    const search = document.getElementById('search')
+    search.addEventListener('input', () => {
+      const q = search.value.toLowerCase()
+      document.querySelectorAll('.card').forEach(card => {
+        const title = card.dataset.title.toLowerCase()
+        card.style.display = title.includes(q) ? 'grid' : 'none'
+      })
+    })
+
+    // Abas / categorias
+    const tabs = document.getElementById('tabs')
+    tabs.addEventListener('click', e => {
+      if(!e.target.classList.contains('tab')) return
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
+      e.target.classList.add('active')
+      const cat = e.target.dataset.cat
+      document.querySelectorAll('.card').forEach(c => {
+        c.style.display = (cat==='todas' || c.dataset.cat===cat) ? 'grid' : 'none'
+      })
+      // rolar até a seção
+      const sec = document.querySelector(`[data-section="${cat}"]`)
+      if(sec) sec.scrollIntoView({behavior:'smooth',block:'start'})
+    })
+
+    // Carrinho simples
+    const cartItems = document.getElementById('cartItems')
+    const totalPrice = document.getElementById('totalPrice')
+    const state = { items: [] }
+    function renderCart(){
+      // limpa mantendo o bloco de cupom
+      cartItems.querySelectorAll('.cart-item').forEach(n=>n.remove())
+      state.items.forEach((it,idx)=>{
+        const row = document.createElement('div')
+        row.className = 'cart-item'
+        row.innerHTML = `
+          <img alt="${it.title}" src="${it.img}">
+          <div>
+            <div style="font-weight:600">${it.title}</div>
+            <div style="font-size:12px;color:#888">${it.qty} × ${brl(it.price)}</div>
+          </div>
+          <div class="qty">
+            <button data-act="dec" data-idx="${idx}">-</button>
+            <div>${it.qty}</div>
+            <button data-act="inc" data-idx="${idx}">+</button>
+          </div>
+        `
+        cartItems.insertBefore(row, cartItems.querySelector('.coupon'))
+      })
+      const total = state.items.reduce((s,it)=> s + it.qty*it.price, 0)
+      totalPrice.textContent = brl(total)
+    }
+
+    document.querySelectorAll('[data-add]').forEach(btn=>{
+      btn.addEventListener('click', e => {
+        const card = e.currentTarget.closest('.card')
+        const title = card.dataset.title
+        const price = parsePrice(card.querySelector('[data-price]'))
+        const img = card.querySelector('img').src
+        const found = state.items.find(i=>i.title===title)
+        if(found) found.qty++
+        else state.items.push({title, price, qty:1, img})
+        renderCart()
+      })
+    })
+
+    cartItems.addEventListener('click', e=>{
+      const act = e.target.dataset.act
+      if(!act) return
+      const idx = Number(e.target.dataset.idx)
+      const it = state.items[idx]
+      if(!it) return
+      if(act==='inc') it.qty++
+      if(act==='dec') it.qty = Math.max(0, it.qty-1)
+      if(it.qty===0) state.items.splice(idx,1)
+      renderCart()
+    })
+
+    document.getElementById('checkout').addEventListener('click', ()=>{
+      alert('Escolha a forma de entrega (exemplo).')
+    })
+  </script>
+</body>
+</html>
+
+
+{{ end }}

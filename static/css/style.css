@@ -1,0 +1,7 @@
+let carrinho = [];
+
+function addCarrinho(produto, preco) {
+  carrinho.push({ produto, preco });
+  localStorage.setItem("carrinho", JSON.stringify(carrinho));
+  alert(produto + " adicionado ao carrinho!");
+}

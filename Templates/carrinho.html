@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Carrinho - Fast Delivery</title>
+    <meta name="description" content="Revise seu pedido antes de finalizar. Fast Delivery, entrega rápida em Parauapebas.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <!-- Additional styles for cart page -->
+    <style>
+        body {
+            background: var(--light-gray);
+            padding-top: 80px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 20px var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-black);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            color: var(--primary-blue);
+            transform: translateX(-5px);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-black);
+        }
+
+        /* Main Content */
+        .cart-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .cart-items-list {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            padding: 2rem;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-bg);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 215, 0, 0.8), rgba(0, 123, 255, 0.8));
+        }
+
+        .item-image i {
+            position: relative;
+            z-index: 2;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 0.25rem;
+        }
+
+        .item-restaurant {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #e0e0e0;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quantity-btn:hover {
+            background: var(--gradient-primary);
+            border-color: var(--primary-yellow);
+        }
+
+        .quantity {
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .remove-item-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .remove-item-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Cart Summary */
+        .cart-summary {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            padding: 2rem;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .summary-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-black);
+        }
+
+        .summary-totals {
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-row.final {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary-black);
+            padding-top: 0.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: var(--gradient-primary);
+            color: var(--primary-black);
+            border: none;
+            padding: 1.25rem;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 2rem;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .checkout-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Empty Cart */
+        .empty-cart-message {
+            text-align: center;
+            color: #666;
+            padding: 4rem 0;
+        }
+
+        .empty-cart-message i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-cart-message h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-cart-message p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-cart-message .btn {
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-summary {
+                position: static;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .cart-item {
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .item-details {
+                flex-basis: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .quantity-controls {
+                order: 3;
+            }
+
+            .remove-item-btn {
+                order: 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="home_cliente.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar
+                </a>
+                
+                <h1 class="page-title">Meu Carrinho</h1>
+                
+                <div></div> <!-- Placeholder for alignment -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="cart-container">
+            <!-- Cart Items List -->
+            <div class="cart-items-list" id="cartItemsList">
+                <!-- Cart items will be loaded here by JavaScript -->
+                <div class="empty-cart-message">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Seu carrinho está vazio</h3>
+                    <p>Parece que você ainda não adicionou nada ao seu carrinho. Que tal explorar nossos restaurantes?</p>
+                    <button class="btn btn-primary" onclick="window.location.href=\'home_cliente.html\'">
+                        <i class="fas fa-utensils"></i> Ver Restaurantes
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cart Summary -->
+            <div class="cart-summary">
+                <div class="summary-header">
+                    <i class="fas fa-receipt"></i>
+                    <span class="summary-title">Resumo do Pedido</span>
+                </div>
+                
+                <div class="summary-totals">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotalAmount">R$ 0,00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Taxa de entrega:</span>
+                        <span>R$ 5,90</span>
+                    </div>
+                    <div class="total-row final">
+                        <span>Total:</span>
+                        <span id="totalAmount">R$ 5,90</span>
+                    </div>
+                </div>
+                
+                <button class="checkout-btn" id="checkoutBtn" onclick="goToCheckout()" disabled>
+                    <i class="fas fa-credit-card"></i>
+                    Finalizar Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Page specific scripts -->
+    <script>
+        let cart = [];
+        const deliveryFee = 5.90;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            cart = FastDelivery.storage.get('cart', []);
+            updateCartDisplay();
+
+            // Welcome message
+            setTimeout(() => {
+                FastDelivery.ui.showNotification(
+                    'Revise seu carrinho antes de finalizar! 🛒',
+                    'info',
+                    3000
+                );
+            }, 1000);
+        });
+
+        // Update cart display
+        function updateCartDisplay() {
+            const cartItemsList = document.getElementById('cartItemsList');
+            const subtotalAmount = document.getElementById('subtotalAmount');
+            const totalAmount = document.getElementById('totalAmount');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            if (cart.length === 0) {
+                cartItemsList.innerHTML = `
+                    <div class="empty-cart-message">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Seu carrinho está vazio</h3>
+                        <p>Parece que você ainda não adicionou nada ao seu carrinho. Que tal explorar nossos restaurantes?</p>
+                        <button class="btn btn-primary" onclick="window.location.href=\'home_cliente.html\'">
+                            <i class="fas fa-utensils"></i> Ver Restaurantes
+                        </button>
+                    </div>
+                `;
+                subtotalAmount.textContent = FastDelivery.utils.formatCurrency(0);
+                totalAmount.textContent = FastDelivery.utils.formatCurrency(deliveryFee);
+                checkoutBtn.disabled = true;
+            } else {
+                cartItemsList.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="item-image">
+                            <i class="fas fa-pizza-slice"></i> <!-- Placeholder icon -->
+                        </div>
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-restaurant">Pizza Express</div> <!-- Assuming single restaurant for now -->
+                            <div class="item-price">${FastDelivery.utils.formatCurrency(item.price * item.quantity)}</div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="updateQuantity('${item.id}', -1)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="quantity">${item.quantity}</span>
+                            <button class="quantity-btn" onclick="updateQuantity('${item.id}', 1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <button class="remove-item-btn" onclick="removeFromCart('${item.id}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const total = subtotal + deliveryFee;
+
+                subtotalAmount.textContent = FastDelivery.utils.formatCurrency(subtotal);
+                totalAmount.textContent = FastDelivery.utils.formatCurrency(total);
+                checkoutBtn.disabled = false;
+            }
+        }
+
+        // Update item quantity
+        function updateQuantity(id, change) {
+            const itemIndex = cart.findIndex(item => item.id === id);
+            if (itemIndex > -1) {
+                cart[itemIndex].quantity += change;
+                if (cart[itemIndex].quantity <= 0) {
+                    cart.splice(itemIndex, 1);
+                }
+                FastDelivery.storage.set('cart', cart);
+                updateCartDisplay();
+                FastDelivery.ui.showNotification(
+                    'Quantidade atualizada!',
+                    'info',
+                    1500
+                );
+            }
+        }
+
+        // Remove item from cart
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            FastDelivery.storage.set('cart', cart);
+            updateCartDisplay();
+            FastDelivery.ui.showNotification(
+                'Item removido do carrinho!',
+                'error',
+                1500
+            );
+        }
+
+        // Go to checkout
+        function goToCheckout() {
+            if (cart.length === 0) {
+                FastDelivery.ui.showNotification(
+                    'Seu carrinho está vazio!',
+                    'warning'
+                );
+                return;
+            }
+            FastDelivery.ui.showNotification(
+                'Redirecionando para o checkout...',
+                'info'
+            );
+            setTimeout(() => {
+                window.location.href = 'checkout.html';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

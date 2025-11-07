@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Pedidos - Fast Delivery</title>
+    <meta name="description" content="Acompanhe o status dos seus pedidos e veja seu histórico no Fast Delivery.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <!-- Additional styles for orders page -->
+    <style>
+        body {
+            background: var(--light-gray);
+            padding-top: 80px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 20px var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-black);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            color: var(--primary-blue);
+            transform: translateX(-5px);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-black);
+        }
+
+        /* Main Content */
+        .orders-container {
+            margin: 2rem 0;
+        }
+
+        .orders-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #e0e0e0;
+            background: var(--white);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--gradient-primary);
+            border-color: var(--primary-yellow);
+            color: var(--primary-black);
+        }
+
+        .order-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #f0f0f0;
+            background: var(--light-gray);
+        }
+
+        .order-id {
+            font-weight: 600;
+            color: var(--primary-black);
+            font-size: 1.1rem;
+        }
+
+        .order-date {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .order-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .status-preparing {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .status-on-the-way {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .status-delivered {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .status-cancelled {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .order-body {
+            padding: 1.5rem 2rem;
+        }
+
+        .restaurant-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .restaurant-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-black);
+            font-size: 1.2rem;
+        }
+
+        .restaurant-name {
+            font-weight: 600;
+            color: var(--primary-black);
+            font-size: 1.1rem;
+        }
+
+        .order-items-list {
+            margin-bottom: 1.5rem;
+        }
+
+        .order-item-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .item-name-qty {
+            color: var(--primary-black);
+        }
+
+        .item-price {
+            color: #666;
+        }
+
+        .order-summary-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1.5rem;
+            border-top: 1px dashed #e0e0e0;
+        }
+
+        .total-amount {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .action-btn.primary {
+            background: var(--gradient-primary);
+            color: var(--primary-black);
+            border: none;
+        }
+
+        .action-btn.secondary {
+            background: none;
+            border: 1px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Empty Orders */
+        .empty-orders {
+            text-align: center;
+            color: #666;
+            padding: 4rem 0;
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .empty-orders i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-orders h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-orders p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-orders .btn {
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .orders-filter {
+                justify-content: center;
+            }
+
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .order-summary-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .order-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="home_cliente.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar
+                </a>
+                
+                <h1 class="page-title">Meus Pedidos</h1>
+                
+                <div></div> <!-- Placeholder for alignment -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="orders-container">
+            <div class="orders-filter">
+                <button class="filter-btn active" data-status="all">Todos</button>
+                <button class="filter-btn" data-status="pending">Pendentes</button>
+                <button class="filter-btn" data-status="on-the-way">A Caminho</button>
+                <button class="filter-btn" data-status="delivered">Entregues</button>
+                <button class="filter-btn" data-status="cancelled">Cancelados</button>
+            </div>
+
+            <div id="ordersList">
+                <!-- Orders will be loaded here by JavaScript -->
+                <div class="empty-orders">
+                    <i class="fas fa-box-open"></i>
+                    <h3>Nenhum pedido encontrado</h3>
+                    <p>Você ainda não fez nenhum pedido ou não há pedidos com o filtro selecionado.</p>
+                    <button class="btn btn-primary" onclick="window.location.href=\'home_cliente.html\'">
+                        <i class="fas fa-utensils"></i> Fazer um Pedido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Page specific scripts -->
+    <script>
+        const allOrders = [
+            {
+                id: 'FD-2024-001',
+                date: '25/09/2025 14:30',
+                restaurant: 'Pizza Express',
+                restaurantIcon: 'fas fa-pizza-slice',
+                status: 'delivered',
+                items: [
+                    { name: 'Pizza Margherita', qty: 1, price: 32.90 },
+                    { name: 'Refrigerante 2L', qty: 1, price: 8.90 }
+                ],
+                subtotal: 41.80,
+                deliveryFee: 5.90,
+                total: 47.70
+            },
+            {
+                id: 'FD-2024-002',
+                date: '24/09/2025 19:00',
+                restaurant: 'Burger House',
+                restaurantIcon: 'fas fa-hamburger',
+                status: 'on-the-way',
+                items: [
+                    { name: 'Hambúrguer Artesanal', qty: 2, price: 25.00 },
+                    { name: 'Batata Frita Grande', qty: 1, price: 12.00 }
+                ],
+                subtotal: 62.00,
+                deliveryFee: 5.90,
+                total: 67.90
+            },
+            {
+                id: 'FD-2024-003',
+                date: '23/09/2025 10:15',
+                restaurant: 'Açaí do Norte',
+                restaurantIcon: 'fas fa-ice-cream',
+                status: 'pending',
+                items: [
+                    { name: 'Açaí 500ml', qty: 1, price: 18.00 },
+                    { name: 'Granola Extra', qty: 1, price: 3.00 }
+                ],
+                subtotal: 21.00,
+                deliveryFee: 5.90,
+                total: 26.90
+            },
+            {
+                id: 'FD-2024-004',
+                date: '22/09/2025 12:00',
+                restaurant: 'Sushi Zen',
+                restaurantIcon: 'fas fa-fish',
+                status: 'cancelled',
+                items: [
+                    { name: 'Combinado Sushi (20 peças)', qty: 1, price: 75.00 }
+                ],
+                subtotal: 75.00,
+                deliveryFee: 5.90,
+                total: 80.90
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders('all');
+
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    loadOrders(this.dataset.status);
+                });
+            });
+
+            // Welcome message
+            setTimeout(() => {
+                FastDelivery.ui.showNotification(
+                    'Seus pedidos estão aqui! 📦',
+                    'info',
+                    3000
+                );
+            }, 1000);
+        });
+
+        function loadOrders(filterStatus) {
+            const ordersListDiv = document.getElementById('ordersList');
+            let filteredOrders = allOrders;
+
+            if (filterStatus !== 'all') {
+                filteredOrders = allOrders.filter(order => order.status === filterStatus);
+            }
+
+            if (filteredOrders.length === 0) {
+                ordersListDiv.innerHTML = `
+                    <div class="empty-orders">
+                        <i class="fas fa-box-open"></i>
+                        <h3>Nenhum pedido encontrado</h3>
+                        <p>Você ainda não fez nenhum pedido ou não há pedidos com o filtro selecionado.</p>
+                        <button class="btn btn-primary" onclick="window.location.href=\'home_cliente.html\'">
+                            <i class="fas fa-utensils"></i> Fazer um Pedido
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            ordersListDiv.innerHTML = filteredOrders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">Pedido ${order.id}</div>
+                            <div class="order-date">${order.date}</div>
+                        </div>
+                        <span class="order-status status-${order.status.replace(/-/g, '')}">${formatStatus(order.status)}</span>
+                    </div>
+                    <div class="order-body">
+                        <div class="restaurant-info">
+                            <div class="restaurant-logo">
+                                <i class="${order.restaurantIcon}"></i>
+                            </div>
+                            <div class="restaurant-name">${order.restaurant}</div>
+                        </div>
+                        <div class="order-items-list">
+                            ${order.items.map(item => `
+                                <div class="order-item-detail">
+                                    <span class="item-name-qty">${item.qty}x ${item.name}</span>
+                                    <span class="item-price">${FastDelivery.utils.formatCurrency(item.price * item.qty)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="order-summary-footer">
+                            <div class="total-amount">Total: ${FastDelivery.utils.formatCurrency(order.total)}</div>
+                            <div class="order-actions">
+                                ${order.status === 'delivered' ? `<button class="action-btn secondary" onclick="reorder('${order.id}')"><i class="fas fa-redo"></i> Pedir Novamente</button>` : ''}
+                                ${order.status === 'pending' || order.status === 'on-the-way' ? `<button class="action-btn secondary" onclick="trackOrder('${order.id}')"><i class="fas fa-map-marker-alt"></i> Acompanhar</button>` : ''}
+                                ${order.status === 'pending' ? `<button class="action-btn primary" onclick="cancelOrder('${order.id}')"><i class="fas fa-times"></i> Cancelar</button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function formatStatus(status) {
+            switch (status) {
+                case 'pending': return 'Pendente';
+                case 'preparing': return 'Preparando';
+                case 'on-the-way': return 'A Caminho';
+                case 'delivered': return 'Entregue';
+                case 'cancelled': return 'Cancelado';
+                default: return status;
+            }
+        }
+
+        function reorder(orderId) {
+            FastDelivery.ui.showNotification(
+                `Pedido ${orderId} adicionado ao carrinho para refazer!`,
+                'success'
+            );
+            // Simulate adding items to cart and redirecting
+            setTimeout(() => {
+                window.location.href = 'carrinho.html';
+            }, 1500);
+        }
+
+        function trackOrder(orderId) {
+            FastDelivery.ui.showNotification(
+                `Acompanhando pedido ${orderId}...`,
+                'info'
+            );
+            // Simulate redirecting to tracking page
+            setTimeout(() => {
+                window.location.href = 'rastreamento.html?order=' + orderId; // Assuming a tracking page
+            }, 1500);
+        }
+
+        function cancelOrder(orderId) {
+            FastDelivery.ui.showModal(`
+                <div class="text-center">
+                    <i class="fas fa-exclamation-triangle fa-4x mb-3" style="color: #ffc107;"></i>
+                    <h4>Confirmar Cancelamento</h4>
+                    <p>Tem certeza que deseja cancelar o pedido ${orderId}?</p>
+                    <div class="mt-3">
+                        <button class="btn btn-secondary me-2" onclick="FastDelivery.ui.hideModal(this.closest('.modal-overlay'))">
+                            Não, Voltar
+                        </button>
+                        <button class="btn btn-primary" onclick="confirmCancel('${orderId}')">
+                            Sim, Cancelar
+                        </button>
+                    </div>
+                </div>
+            `, {
+                title: 'Cancelar Pedido'
+            });
+        }
+
+        function confirmCancel(orderId) {
+            FastDelivery.ui.hideModal(document.querySelector('.modal-overlay'));
+            FastDelivery.ui.showNotification(
+                `Pedido ${orderId} cancelado com sucesso!`,
+                'error'
+            );
+            // Update order status in allOrders and reload display
+            const orderIndex = allOrders.findIndex(order => order.id === orderId);
+            if (orderIndex > -1) {
+                allOrders[orderIndex].status = 'cancelled';
+            }
+            loadOrders(document.querySelector('.filter-btn.active').dataset.status);
+        }
+    </script>
+</body>
+</html>

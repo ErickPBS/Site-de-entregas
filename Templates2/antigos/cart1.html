@@ -1,0 +1,35 @@
+{{ define "content" }}
+<h2>Seu Carrinho</h2>
+
+{{ if .items }}
+<table class="cart-table">
+    <tr>
+        <th>Produto</th>
+        <th>Qtd</th>
+        <th>Preço</th>
+        <th>Total</th>
+        <th>Ações</th>
+    </tr>
+    {{ range .items }}
+    <tr>
+        <td>{{ .Name }}</td>
+        <td>{{ .Quantity }}</td>
+        <td>R$ {{ .Price }}</td>
+        <td>R$ {{ .Total }}</td>
+        <td>
+            <form method="POST" action="/carrinho/remove">
+                <input type="hidden" name="product_id" value="{{ .ID }}">
+                <button type="submit" class="danger">Remover</button>
+            </form>
+        </td>
+    </tr>
+    {{ end }}
+</table>
+
+<button class="checkout">Finalizar Pedido</button>
+
+{{ else }}
+<p>Seu carrinho está vazio. <a href="/produtos">Escolher produtos</a></p>
+{{ end }}
+
+{{ end }}

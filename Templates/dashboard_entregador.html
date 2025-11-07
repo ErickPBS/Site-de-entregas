@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Entregador - Fast Delivery</title>
+    <meta name="description" content="Painel do entregador para gerenciar entregas e acompanhar ganhos no Fast Delivery.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    
+    <!-- Additional styles for delivery dashboard -->
+    <style>
+        body {
+            background: var(--light-gray);
+            padding-top: 0;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--white);
+            box-shadow: 2px 0 10px var(--shadow);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 280px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 2rem;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: center;
+        }
+
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .delivery-status {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-indicator.available {
+            color: #28a745;
+        }
+
+        .status-indicator.busy {
+            color: #ffc107;
+        }
+
+        .status-indicator.offline {
+            color: #dc3545;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            background: var(--white);
+            padding: 1.5rem 2rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .availability-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: var(--light-gray);
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .availability-toggle.available {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .availability-toggle.busy {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .availability-toggle.offline {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-primary);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Available Orders */
+        .available-orders {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-black);
+        }
+
+        .orders-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .delivery-item {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: var(--transition);
+        }
+
+        .delivery-item:hover {
+            background: var(--light-gray);
+        }
+
+        .delivery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .delivery-id {
+            font-weight: 600;
+            color: var(--primary-black);
+        }
+
+        .delivery-value {
+            font-weight: 600;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+        }
+
+        .delivery-details {
+            margin-bottom: 1rem;
+        }
+
+        .delivery-route {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .delivery-distance {
+            font-size: 0.85rem;
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .delivery-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .delivery-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .delivery-btn.accept {
+            background: var(--gradient-primary);
+            color: var(--primary-black);
+        }
+
+        .delivery-btn.accept:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .delivery-btn.details {
+            background: var(--gradient-blue);
+            color: var(--white);
+        }
+
+        /* Current Delivery */
+        .current-delivery {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            padding: 2rem;
+        }
+
+        .delivery-progress {
+            margin-bottom: 2rem;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .progress-step.completed::after {
+            background: var(--primary-yellow);
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #666;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-step.completed .step-circle {
+            background: var(--primary-yellow);
+            color: var(--primary-black);
+        }
+
+        .progress-step.active .step-circle {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .step-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+        }
+
+        .delivery-info {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #666;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--primary-black);
+        }
+
+        .delivery-actions-current {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Map placeholder */
+        .map-container {
+            grid-column: 1 / -1;
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            padding: 2rem;
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .map-placeholder {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .delivery-actions-current {
+                flex-direction: column;
+            }
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--white);
+            border: none;
+            padding: 0.75rem;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px var(--shadow);
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">Fast Delivery</div>
+                <div class="sidebar-subtitle">Painel do Entregador</div>
+                <div class="delivery-status">
+                    <div class="status-indicator available">
+                        <i class="fas fa-circle"></i>
+                        Disponível
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-motorcycle"></i>
+                        Entregas Disponíveis
+                        <span class="nav-badge">3</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-route"></i>
+                        Entrega Atual
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        Histórico
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-dollar-sign"></i>
+                        Ganhos
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-user"></i>
+                        Perfil
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-headset"></i>
+                        Suporte
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="header-title">
+                    <h1>Olá, Carlos Mendes!</h1>
+                    <div class="header-subtitle">Pronto para mais entregas hoje?</div>
+                </div>
+                <div class="header-actions">
+                    <button class="availability-toggle available" id="availabilityToggle">
+                        <i class="fas fa-circle"></i>
+                        Disponível
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-map"></i>
+                        Ver Mapa
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card hover-lift">
+                    <div class="stat-header">
+                        <div class="stat-title">Entregas Hoje</div>
+                        <div class="stat-icon primary">
+                            <i class="fas fa-motorcycle"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +2 vs ontem
+                    </div>
+                </div>
+
+                <div class="stat-card hover-lift">
+                    <div class="stat-header">
+                        <div class="stat-title">Ganhos Hoje</div>
+                        <div class="stat-icon blue">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">R$ 96</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +R$ 18
+                    </div>
+                </div>
+
+                <div class="stat-card hover-lift">
+                    <div class="stat-header">
+                        <div class="stat-title">Tempo Online</div>
+                        <div class="stat-icon success">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">6h 30m</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +1h vs ontem
+                    </div>
+                </div>
+
+                <div class="stat-card hover-lift">
+                    <div class="stat-header">
+                        <div class="stat-title">Avaliação</div>
+                        <div class="stat-icon warning">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">4.9</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        Mantida
+                    </div>
+                </div>
+
+                <div class="stat-card hover-lift">
+                    <div class="stat-header">
+                        <div class="stat-title">Distância</div>
+                        <div class="stat-icon primary">
+                            <i class="fas fa-route"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">42km</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +8km
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Available Orders -->
+                <div class="available-orders">
+                    <div class="section-header">
+                        <div class="section-title">Entregas Disponíveis</div>
+                        <button class="btn btn-sm btn-outline">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="orders-list">
+                        <div class="delivery-item">
+                            <div class="delivery-header">
+                                <div class="delivery-id">#FD-2024-001</div>
+                                <div class="delivery-value">R$ 12,00</div>
+                            </div>
+                            <div class="delivery-details">
+                                <div class="delivery-route">
+                                    <i class="fas fa-store"></i>
+                                    Pizza Express → Rua das Flores, 123
+                                </div>
+                                <div class="delivery-distance">
+                                    <i class="fas fa-route"></i>
+                                    2.3 km • ~8 min
+                                </div>
+                            </div>
+                            <div class="delivery-actions">
+                                <button class="delivery-btn accept">
+                                    <i class="fas fa-check"></i> Aceitar
+                                </button>
+                                <button class="delivery-btn details">
+                                    <i class="fas fa-info"></i> Detalhes
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="delivery-item">
+                            <div class="delivery-header">
+                                <div class="delivery-id">#FD-2024-002</div>
+                                <div class="delivery-value">R$ 15,50</div>
+                            </div>
+                            <div class="delivery-details">
+                                <div class="delivery-route">
+                                    <i class="fas fa-store"></i>
+                                    Burger House → Av. Central, 456
+                                </div>
+                                <div class="delivery-distance">
+                                    <i class="fas fa-route"></i>
+                                    3.1 km • ~12 min
+                                </div>
+                            </div>
+                            <div class="delivery-actions">
+                                <button class="delivery-btn accept">
+                                    <i class="fas fa-check"></i> Aceitar
+                                </button>
+                                <button class="delivery-btn details">
+                                    <i class="fas fa-info"></i> Detalhes
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="delivery-item">
+                            <div class="delivery-header">
+                                <div class="delivery-id">#FD-2024-003</div>
+                                <div class="delivery-value">R$ 8,00</div>
+                            </div>
+                            <div class="delivery-details">
+                                <div class="delivery-route">
+                                    <i class="fas fa-store"></i>
+                                    Açaí do Norte → Rua do Comércio, 789
+                                </div>
+                                <div class="delivery-distance">
+                                    <i class="fas fa-route"></i>
+                                    1.8 km • ~6 min
+                                </div>
+                            </div>
+                            <div class="delivery-actions">
+                                <button class="delivery-btn accept">
+                                    <i class="fas fa-check"></i> Aceitar
+                                </button>
+                                <button class="delivery-btn details">
+                                    <i class="fas fa-info"></i> Detalhes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Delivery -->
+                <div class="current-delivery">
+                    <div class="section-title mb-3">Entrega Atual</div>
+                    
+                    <div class="delivery-progress">
+                        <div class="progress-steps">
+                            <div class="progress-step completed">
+                                <div class="step-circle">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="step-label">Coletado</div>
+                            </div>
+                            <div class="progress-step active">
+                                <div class="step-circle">2</div>
+                                <div class="step-label">A caminho</div>
+                            </div>
+                            <div class="progress-step">
+                                <div class="step-circle">3</div>
+                                <div class="step-label">Entregue</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="delivery-info">
+                        <div class="info-row">
+                            <span class="info-label">Pedido:</span>
+                            <span class="info-value">#FD-2024-004</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Cliente:</span>
+                            <span class="info-value">Ana Silva</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Endereço:</span>
+                            <span class="info-value">Rua das Palmeiras, 321</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Valor da Entrega:</span>
+                            <span class="info-value">R$ 10,00</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Tempo Estimado:</span>
+                            <span class="info-value">5 minutos</span>
+                        </div>
+                    </div>
+
+                    <div class="delivery-actions-current">
+                        <button class="btn btn-primary flex-1">
+                            <i class="fas fa-phone"></i>
+                            Ligar Cliente
+                        </button>
+                        <button class="btn btn-secondary flex-1">
+                            <i class="fas fa-check-circle"></i>
+                            Marcar Entregue
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Container -->
+            <div class="map-container">
+                <div class="section-title mb-3">Mapa de Entregas</div>
+                <div class="map-placeholder">
+                    <i class="fas fa-map fa-4x mb-3" style="color: var(--primary-blue);"></i>
+                    <h4>Mapa Interativo</h4>
+                    <p>Aqui seria exibido o mapa com as rotas de entrega em tempo real.</p>
+                    <button class="btn btn-primary mt-3">
+                        <i class="fas fa-expand"></i>
+                        Abrir Mapa Completo
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Page specific scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileToggle = document.getElementById('mobileMenuToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            mobileToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+
+            // Availability toggle
+            const availabilityToggle = document.getElementById('availabilityToggle');
+            const statusIndicator = document.querySelector('.status-indicator');
+            
+            availabilityToggle.addEventListener('click', function() {
+                if (this.classList.contains('available')) {
+                    this.classList.remove('available');
+                    this.classList.add('busy');
+                    this.innerHTML = '<i class="fas fa-circle"></i> Ocupado';
+                    statusIndicator.className = 'status-indicator busy';
+                    statusIndicator.innerHTML = '<i class="fas fa-circle"></i> Ocupado';
+                    FastDelivery.ui.showNotification('Status alterado para Ocupado', 'warning');
+                } else if (this.classList.contains('busy')) {
+                    this.classList.remove('busy');
+                    this.classList.add('offline');
+                    this.innerHTML = '<i class="fas fa-circle"></i> Offline';
+                    statusIndicator.className = 'status-indicator offline';
+                    statusIndicator.innerHTML = '<i class="fas fa-circle"></i> Offline';
+                    FastDelivery.ui.showNotification('Status alterado para Offline', 'error');
+                } else {
+                    this.classList.remove('offline');
+                    this.classList.add('available');
+                    this.innerHTML = '<i class="fas fa-circle"></i> Disponível';
+                    statusIndicator.className = 'status-indicator available';
+                    statusIndicator.innerHTML = '<i class="fas fa-circle"></i> Disponível';
+                    FastDelivery.ui.showNotification('Status alterado para Disponível', 'success');
+                }
+            });
+
+            // Delivery actions
+            document.querySelectorAll('.delivery-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.classList.contains('accept')) {
+                        FastDelivery.ui.showLoading(this);
+                        
+                        setTimeout(() => {
+                            FastDelivery.ui.hideLoading(this);
+                            FastDelivery.ui.showNotification(
+                                'Entrega aceita! Dirija-se ao restaurante.',
+                                'success'
+                            );
+                            
+                            // Remove item from available list
+                            this.closest('.delivery-item').style.opacity = '0.5';
+                            this.closest('.delivery-item').style.pointerEvents = 'none';
+                        }, 1500);
+                    } else if (this.classList.contains('details')) {
+                        const deliveryId = this.closest('.delivery-item').querySelector('.delivery-id').textContent;
+                        
+                        FastDelivery.ui.showModal(`
+                            <div>
+                                <h4>Detalhes da Entrega ${deliveryId}</h4>
+                                <div class="mb-3">
+                                    <strong>Cliente:</strong> João Silva<br>
+                                    <strong>Telefone:</strong> (94) 99999-9999<br>
+                                    <strong>Endereço:</strong> Rua das Flores, 123 - Centro<br>
+                                    <strong>Observações:</strong> Apartamento 201, interfone 12
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Itens do Pedido:</strong><br>
+                                    • 2x Pizza Margherita<br>
+                                    • 1x Refrigerante 2L<br>
+                                    • 1x Sobremesa
+                                </div>
+                                <div class="text-center">
+                                    <button class="btn btn-primary" onclick="FastDelivery.ui.hideModal(this.closest('.modal-overlay'))">
+                                        Fechar
+                                    </button>
+                                </div>
+                            </div>
+                        `, {
+                            title: 'Detalhes da Entrega'
+                        });
+                    }
+                });
+            });
+
+            // Current delivery actions
+            document.querySelectorAll('.delivery-actions-current .btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.textContent.includes('Ligar')) {
+                        FastDelivery.ui.showNotification(
+                            'Ligando para o cliente...',
+                            'info'
+                        );
+                    } else if (this.textContent.includes('Entregue')) {
+                        FastDelivery.ui.showModal(`
+                            <div class="text-center">
+                                <i class="fas fa-check-circle fa-4x mb-3" style="color: #28a745;"></i>
+                                <h4>Confirmar Entrega</h4>
+                                <p>Confirma que o pedido foi entregue ao cliente?</p>
+                                <div class="mt-3">
+                                    <button class="btn btn-secondary me-2" onclick="FastDelivery.ui.hideModal(this.closest('.modal-overlay'))">
+                                        Cancelar
+                                    </button>
+                                    <button class="btn btn-primary" onclick="confirmDelivery()">
+                                        Confirmar Entrega
+                                    </button>
+                                </div>
+                            </div>
+                        `, {
+                            title: 'Confirmar Entrega'
+                        });
+                    }
+                });
+            });
+
+            // Navigation links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') === '#') {
+                        e.preventDefault();
+                        
+                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        const section = this.textContent.trim();
+                        FastDelivery.ui.showNotification(
+                            `Navegando para ${section}`,
+                            'info',
+                            2000
+                        );
+                    }
+                });
+            });
+
+            // Auto-refresh available orders
+            setInterval(() => {
+                const badge = document.querySelector('.nav-badge');
+                if (badge && Math.random() > 0.8) { // 20% chance
+                    const currentCount = parseInt(badge.textContent);
+                    badge.textContent = currentCount + 1;
+                    FastDelivery.ui.showNotification(
+                        'Nova entrega disponível!',
+                        'info'
+                    );
+                }
+            }, 45000); // Check every 45 seconds
+
+            // Welcome message
+            setTimeout(() => {
+                FastDelivery.ui.showNotification(
+                    'Bem-vindo ao painel do entregador! 🏍️',
+                    'success',
+                    3000
+                );
+            }, 1000);
+
+            // Load user data
+            const userData = FastDelivery.storage.get('currentUser');
+            if (userData) {
+                console.log('Entregador logado:', userData);
+            }
+        });
+
+        // Global function for delivery confirmation
+        function confirmDelivery() {
+            FastDelivery.ui.hideModal(document.querySelector('.modal-overlay'));
+            
+            // Update progress steps
+            const steps = document.querySelectorAll('.progress-step');
+            steps.forEach(step => step.classList.add('completed'));
+            
+            FastDelivery.ui.showNotification(
+                'Entrega confirmada! Parabéns! 🎉',
+                'success'
+            );
+            
+            // Reset current delivery after a delay
+            setTimeout(() => {
+                location.reload();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

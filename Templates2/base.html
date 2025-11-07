@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .title }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Delivery App</h1>
+        <nav>
+            <a href="/">Início</a>
+            <a href="/produtos">Produtos</a>
+            <a href="/carrinho">Carrinho</a>
+            <a href="/login">Entrar</a>
+        </nav>
+    </header>
+    <main>
+        {{ template "content" . }}
+    </main>
+</body>
+</html>
