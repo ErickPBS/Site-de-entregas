@@ -1,0 +1,131 @@
+﻿
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>App Delivery – Painel do Entregador</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="/static/js/nav.js" defer></script>
+  <style>
+    .cols { display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap:16px; align-items:start; }
+    .lane h2 { margin:0 0 8px 0; font-size:18px; }
+    .lane .card { background:#fff; border-radius:10px; padding:12px; box-shadow:0 1px 8px rgba(0,0,0,.06); }
+    .job { border:1px solid #f3f4f6; border-radius:8px; padding:10px; margin-bottom:10px; }
+    .job small { color:#6b7280; }
+    .meta { color:#6b7280; display:block; margin-top:2px; }
+    .job .actions { margin-top:8px; display:flex; gap:8px; }
+    .btn { border:none; border-radius:6px; padding:8px 10px; cursor:pointer; color:#fff; text-decoration:none; display:inline-block; }
+    .btn-primary { background:#3b82f6; }
+    .btn-success { background:#10b981; }
+    .btn-secondary { background:#6b7280; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand" style="color:#ff3d3d">Entregas</div>
+      <nav>
+        <a href="#" onclick="history.back();return false;">Voltar</a>
+        <a href="/Templates/delivery_panel.html">Corridas</a>
+        <hr />
+        <a href="/logout">Sair</a>
+      </nav>
+    </aside>
+    <main class="content">
+      <h1>Corridas</h1>
+      <div class="cols">
+        <section class="lane">
+          <h2>Aceitas</h2>
+          <div class="card" id="lista-aceitas"></div>
+        </section>
+        <section class="lane">
+          <h2>Em rota</h2>
+          <div class="card" id="lista-rota"></div>
+        </section>
+        <section class="lane">
+          <h2>Concluídas</h2>
+          <div class="card" id="lista-concluidas"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let dados = [];
+
+    async function carregarServidor(){
+      const r = await fetch('/api/entregas');
+      if (!r.ok) throw new Error('falha');
+      dados = await r.json();
+      render();
+    }
+
+    async function setStatus(id, novo){
+      const body = new URLSearchParams({id, status: novo});
+      const r = await fetch('/api/entregas/status', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, body });
+      if (r.ok) await carregarServidor();
+    }
+
+    function jobEl(j){
+      const div = document.createElement('div');
+      div.className = 'job';
+      const dist = (isFinite(j.distancia) && j.distancia>0) ? `${Number(j.distancia).toFixed(1).replace('.', ',')} km` : '';
+      const endereco = (j.endereco||'').trim() || 'Endereço não informado';
+      const fone = (j.telefone||'').replace(/\D/g,'');
+      const maskTel = f => {
+        if(!f) return '';
+        if (f.length > 11) f = f.slice(0,11);
+        if (f.length > 10) return f.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+        if (f.length > 6) return f.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+        if (f.length > 2) return f.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+        if (f.length > 0) return f.replace(/(\d{0,2})/, '($1');
+        return '';
+      };
+      const foneFmt = maskTel(fone);
+      div.innerHTML = `
+        <strong>Corrida #${j.id}</strong>
+        <small class="meta">Loja: ${j.loja||'—'} ${dist?`• ${dist}`:''}</small>
+        <small class="meta">Entrega: ${endereco}</small>
+        ${foneFmt?`<small class=\"meta\">Contato: ${foneFmt}</small>`:''}
+      `;
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+      if (j.status === 'aceita') {
+        const b = document.createElement('button'); b.className='btn btn-primary'; b.textContent='Iniciar rota'; b.onclick=()=>setStatus(j.id,'rota'); actions.appendChild(b);
+      } else if (j.status === 'rota') {
+        const b = document.createElement('button'); b.className='btn btn-success'; b.textContent='Concluir'; b.onclick=()=>setStatus(j.id,'concluida'); actions.appendChild(b);
+      }
+      // Link para o mapa, se houver endereço
+      if (endereco && endereco !== 'Endereço não informado') {
+        const a = document.createElement('a');
+        a.className = 'btn btn-secondary';
+        a.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(endereco);
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = 'Ver no mapa';
+        actions.appendChild(a);
+      }
+      if (actions.children.length) div.appendChild(actions);
+      return div;
+    }
+
+    function preencher(id, lista){
+      const box = document.getElementById(id); if (!box) return; box.innerHTML='';
+      lista.forEach(j => box.appendChild(jobEl(j)));
+      if (!lista.length) box.innerHTML = '<div style="color:#6b7280">Nenhuma corrida.</div>';
+    }
+
+    function render(){
+      const aceitas = dados.filter(j=>j.status==='aceita');
+      const rota = dados.filter(j=>j.status==='rota');
+      const concl = dados.filter(j=>j.status==='concluida');
+      preencher('lista-aceitas', aceitas);
+      preencher('lista-rota', rota);
+      preencher('lista-concluidas', concl);
+    }
+
+    window.addEventListener('load', carregarServidor);
+  </script>
+</body>
+</html>

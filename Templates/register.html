@@ -1,0 +1,112 @@
+﻿
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>App Delivery – Cadastro</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="../static/style.css" />
+  <script src="/static/js/nav.js" defer></script>
+  <style>
+    .form-card { background:#fff;border-radius:10px;padding:20px;box-shadow:0 1px 10px rgba(0,0,0,.08);max-width:720px; margin:0 auto; }
+    .field { margin: 10px 0 14px 0; }
+    .field label { display:block; font-weight:600; margin-bottom:6px; color:#374151; }
+    .field input[type="text"], .field input[type="email"], .field input[type="password"], .field select { width:100%; padding:12px 10px; border:1px solid #e5e7eb; border-radius:8px; box-sizing:border-box; }
+    .field input:focus, .field select:focus { outline:none; border-color:#4f46e5; box-shadow:0 0 0 3px rgba(79,70,229,.12); }
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .btn-primary { background:#ff3d3d; color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:600; width:100%; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <main class="content">
+      <h1>Criar conta</h1>
+      {{if .Error}}<div style="background:#ffecec;color:#b00020;padding:8px;border-radius:6px;margin-bottom:8px;max-width:720px;margin-left:auto;margin-right:auto;">{{.Error}}</div>{{end}}
+      {{if .Success}}<div style="background:#ecffef;color:#0f5132;padding:8px;border-radius:6px;margin-bottom:8px;max-width:720px;margin-left:auto;margin-right:auto;">{{.Success}}</div>{{end}}
+      <form class="form-card" action="/register" method="post">
+        <div class="field">
+          <label>Nome</label>
+          <input type="text" name="name" placeholder="Nome" required />
+        </div>
+        <div class="field">
+          <label>E-mail</label>
+          <input type="email" name="email" placeholder="E-mail" required />
+        </div>
+        <div class="field">
+          <label>Telefone</label>
+          <input type="tel" name="telefone" placeholder="(99) 99999-9999" pattern="[0-9()+\-\s]{8,}" required />
+        </div>
+        <div class="field">
+          <label>Senha</label>
+          <input type="password" name="password" placeholder="Senha" required />
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label>Rua</label>
+            <input type="text" name="rua" placeholder="Rua" required />
+          </div>
+          <div class="field">
+            <label>Bairro</label>
+            <input type="text" name="bairro" placeholder="Bairro" required />
+          </div>
+          <div class="field">
+            <label>Número</label>
+            <input type="text" name="numero" placeholder="Número" required />
+          </div>
+          <div class="field">
+            <label>Cidade</label>
+            <input type="text" name="cidade" placeholder="Cidade" required />
+          </div>
+        </div>
+        <div class="field">
+          <label>Tipo de usuário</label>
+          <select name="role" required>
+            <option value="">Selecione</option>
+            <option value="cliente">Cliente</option>
+            <option value="fornecedor">Fornecedor</option>
+            <option value="entregador">Entregador</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary">Criar conta</button>
+      </form>
+      <p style="color:#6b7280;max-width:720px;margin:10px auto 0 auto;">Já possui conta? <a href="/login">Entrar</a></p>
+    </main>
+  </div>
+  <script>
+    (function(){
+      function maskTel(v){
+        v = (v||'').replace(/\D/g,'');
+        if (v.length > 11) v = v.slice(0,11);
+        if (v.length > 10) {
+          return v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+        }
+        if (v.length > 6) {
+          return v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+        }
+        if (v.length > 2) {
+          return v.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+        }
+        if (v.length > 0) {
+          return v.replace(/(\d{0,2})/, '($1');
+        }
+        return v;
+      }
+      function bindMask(){
+        var telInputs = document.querySelectorAll('input[name="telefone"]');
+        telInputs.forEach(function(inp){
+          inp.setAttribute('maxlength','16');
+          inp.addEventListener('input', function(){
+            var pos = inp.selectionStart;
+            var prev = inp.value;
+            inp.value = maskTel(inp.value);
+            // best-effort caret keep
+            try{ inp.selectionStart = inp.selectionEnd = pos; }catch(e){}
+          });
+        });
+      }
+      document.addEventListener('DOMContentLoaded', bindMask);
+    })();
+  </script>
+</body>
+</html>

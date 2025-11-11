@@ -1,0 +1,61 @@
+﻿
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>App Delivery – Cardápio</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="../static/style.css" />
+  <script src="/static/js/nav.js" defer></script>
+  <script src="/static/js/carrinho.js" defer></script>
+  <script>
+    async function carregarProdutos(){
+      const grid = document.querySelector('.product-grid');
+      if (!grid) return;
+      try {
+        const r = await fetch('/api/produtos');
+        if (!r.ok) throw new Error('fail');
+        const list = await r.json();
+        if (Array.isArray(list) && list.length){
+          grid.innerHTML = list.map(p => `
+            <div class="product-card">
+              <img src="${p.imagem || 'https://picsum.photos/seed/x/300/120'}" alt="Produto">
+              <h3>${p.nome}</h3>
+              <p>R$ ${Number(p.preco||0).toFixed(2).replace('.', ',')}</p>
+              <button onclick="addCarrinho('${p.nome.replace(/'/g,"\'")}', ${Number(p.preco||0)})">Adicionar</button>
+            </div>
+          `).join('');
+        } else {
+          grid.innerHTML = '<div style="color:#6b7280">Nenhum produto disponível.</div>';
+        }
+      } catch(_){ /* mantém mocks */ }
+    }
+    window.addEventListener('load', carregarProdutos);
+  </script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand" style="color:#ff3d3d">Área do Cliente</div>
+      <nav>
+        <a href="/perfil">Perfil</a>
+        <a href="/Templates/pedidos.html">Meus Pedidos</a>
+        <hr />
+        <a href="/Templates/products.html">Cardápio</a>
+        <a href="/Templates/cart.html">Carrinho</a>
+        <a href="/logout">Sair</a>
+      </nav>
+    </aside>
+    <main class="content">
+      <h1>Cardápio</h1>
+      <div class="product-grid">
+        <div class="product-card"><img src="https://picsum.photos/seed/p1/300/120" alt="Produto"><h3>Burger Clássico</h3><p>R$ 25,00</p><button onclick="addCarrinho('Burger Clássico', 25)">Adicionar</button></div>
+        <div class="product-card"><img src="https://picsum.photos/seed/p2/300/120" alt="Produto"><h3>Pizza Margherita</h3><p>R$ 45,00</p><button onclick="addCarrinho('Pizza Margherita', 45)">Adicionar</button></div>
+        <div class="product-card"><img src="https://picsum.photos/seed/p3/300/120" alt="Produto"><h3>Salada Caesar</h3><p>R$ 22,00</p><button onclick="addCarrinho('Salada Caesar', 22)">Adicionar</button></div>
+        <div class="product-card"><img src="https://picsum.photos/seed/p4/300/120" alt="Produto"><h3>Sushi Combo</h3><p>R$ 59,00</p><button onclick="addCarrinho('Sushi Combo', 59)">Adicionar</button></div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

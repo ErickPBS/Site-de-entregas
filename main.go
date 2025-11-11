@@ -1,13 +1,18 @@
 package main
 
 import (
-	"fmt"
-	"modulo/rotas"
-	"net/http"
+    "log"
+    "net/http"
+
+    "modulo/rotas"
 )
 
 func main() {
-	rotas.Rotas()
-	fmt.Println("servidor rodando na porta 8080")
-	http.ListenAndServe(":8080", nil)
+    // Registra rotas de aplicação (inclui guarda para /Templates/)
+    rotas.Rotas()
+
+    log.Println("Servidor rodando em http://localhost:8080")
+    if err := http.ListenAndServe(":8080", nil); err != nil {
+        log.Fatal(err)
+    }
 }

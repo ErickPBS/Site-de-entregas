@@ -1,0 +1,16 @@
+{
+  "8accdc6319a71e3a7e2d3bd6f1f21941": {
+    "id": "8accdc6319a71e3a7e2d3bd6f1f21941",
+    "nome": "Hulk",
+    "preco": 50,
+    "descricao": "hamburger",
+    "imagem": ""
+  },
+  "b8b8331bf1a5961a40dfca3c7395eb5e": {
+    "id": "b8b8331bf1a5961a40dfca3c7395eb5e",
+    "nome": "Carneiro",
+    "preco": 30,
+    "descricao": "Hamburger",
+    "imagem": ""
+  }
+}

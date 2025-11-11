@@ -1,0 +1,35 @@
+{
+  "erick.antunes0@gmail.com": {
+    "Name": "erick",
+    "Email": "erick.antunes0@gmail.com",
+    "Pass": "123",
+    "Role": "cliente",
+    "Phone": "94992453329",
+    "Rua": "Rua",
+    "Bairro": "Bairro",
+    "Numero": "26",
+    "Cidade": "Parauapebas"
+  },
+  "erick1.antunes0@gmail.com": {
+    "Name": "erick1",
+    "Email": "erick1.antunes0@gmail.com",
+    "Pass": "123",
+    "Role": "fornecedor",
+    "Phone": "",
+    "Rua": "",
+    "Bairro": "",
+    "Numero": "",
+    "Cidade": ""
+  },
+  "erick2.antunes0@gmail.com": {
+    "Name": "erick2",
+    "Email": "erick2.antunes0@gmail.com",
+    "Pass": "123",
+    "Role": "entregador",
+    "Phone": "",
+    "Rua": "",
+    "Bairro": "",
+    "Numero": "",
+    "Cidade": ""
+  }
+}

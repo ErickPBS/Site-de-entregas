@@ -1,0 +1,55 @@
+﻿
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>App Delivery – Carrinho</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="../static/style.css" />
+  <script src="/static/js/nav.js" defer></script>
+  <script src="/static/js/carrinho.js" defer></script>
+  <style>
+    .form-card { background:#fff;border-radius:10px;padding:20px;box-shadow:0 1px 10px rgba(0,0,0,.08);max-width:980px; }
+    .actions { display:flex; gap:10px; margin-top:12px; }
+    .btn-primary { background:#28a745; color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:600; display:inline-block; text-decoration:none; }
+    /* Estiliza os botões de quantidade sem afetar o remover (danger) */
+    .cart-table td button:not(.danger) {
+      background:#eef2ff; border:1px solid #e5e7eb; padding:4px 10px; border-radius:6px; cursor:pointer;
+    }
+    .cart-table td button:not(.danger):hover { background:#e0e7ff; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand" style="color:#ff3d3d">Área do Cliente</div>
+      <nav>
+        <a href="#" onclick="history.back();return false;">Voltar</a>
+        <a href="/perfil">Perfil</a>
+        <hr />
+        <a href="/Templates/products.html">Cardápio</a>
+        <a href="/Templates/cart.html">Carrinho</a>
+        <a href="/logout">Sair</a>
+      </nav>
+    </aside>
+    <main class="content">
+      <h1>Carrinho</h1>
+      <div class="form-card">
+      <table class="cart-table">
+        <thead><tr><th>Item</th><th>Qtd</th><th>Preço</th><th></th></tr></thead>
+        <tbody id="cart-body"></tbody>
+        <tfoot>
+          <tr><td colspan="2"></td><td><span>Subtotal: <strong id="cart-subtotal">R$ 0,00</strong></span></td><td></td></tr>
+          <tr><td colspan="2"></td><td><span>Frete: <strong id="cart-frete">R$ 0,00</strong></span></td><td></td></tr>
+          <tr><td colspan="2"></td><td><span>Total: <strong id="cart-total">R$ 0,00</strong></span></td><td></td></tr>
+        </tfoot>
+      </table>
+      <div class="actions">
+        <a class="checkout btn-primary" href="/Templates/checkout.html">Ir para Checkout</a>
+      </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
